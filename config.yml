@@ -1,0 +1,33 @@
+# This is an example config file that outlines a directory structure and can easily be modified to suit your needs
+
+directory_structure:
+  # The name of the root directory should be the name of the course
+  # This should be an absolute path
+  root: /Users/james/opt/cmstest/
+    # subdirectories. The defaults work well
+  subs:
+    - exam
+    - hw
+    - note
+    - quiz
+
+# Directories that will not be explored
+ignored_directories:
+  - .git
+  - ignore
+
+# Extensions used by files containing source code
+# Only implementation files (.cpp) should be listed
+# Don't list header (.h, .hpp) file extensions here
+source_extensions:
+  - .cpp
+
+# Extra options you'd like to be included in all makefiles
+makefile_options:
+  compiler: c++
+  compiler_flags:
+    - -O
+    - -std=c++2a
+  libraries:
+
+
