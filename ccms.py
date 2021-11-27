@@ -2,6 +2,7 @@
 
 import os
 from ruamel.yaml import YAML
+from multiprocessing import Pool
 
 from mf import MakeFile, Target
 
@@ -113,6 +114,21 @@ def read_cfg(path):
     return cfg
 
 
+def build_sub(drctry, tmplt, exts):
+    """
+        Walks filesystem with root at drctry (creates it if it doesn't exist),
+        and builds makefiles at each point
+    """
+    # Create drctry if it doesn't exist
+    if not os.path.isdir(drctry):
+        os.mkdir(drctry)
+
+    for (thisDir, subsHere, filesHere) in os.walk(drctry, topdown=True):
+        # Remove subdirectories we don't want to traverse
+        subsHere[:] = [sub for sub in subsHere if sub not in igDirs]
+        # Build makefile for current directory
+        build_mf(thisDir, tmplt, exts)
+
 def main(cfg_path):
     # Get configuration
     cfg = read_cfg(cfg_path)
@@ -127,16 +143,8 @@ def main(cfg_path):
         os.makedirs(startDir)
 
     for s in subDirs:
-        # Create s if necessary
-        if not os.path.isdir(s):
-            os.mkdir(s)
+        build_sub(s, tmplt, exts)
 
-        # Iterate over subdirectories of s, building makefiles in each subdir
-        for (thisDir, subsHere, filesHere) in os.walk(s, topdown=True):
-            # Remove subdirectories we don't want to traverse
-            subsHere[:] = [sub for sub in subsHere if sub not in igDirs]
-            # Build makefile for current directory
-            build_mf(thisDir, tmplt, exts)
 
 
 if __name__ == "__main__":
