@@ -16,10 +16,10 @@ ignored_directories:
   - .git
   - ignore
 
-# Extensions used by files containing source code
+# Extension used by files containing source code
 # Only implementation files (.cpp) should be listed
 # Don't list header (.h, .hpp) file extensions here
-source_extensions:
+source_extension:
   - .cpp
 
 # Extra options you'd like to be included in all makefiles
