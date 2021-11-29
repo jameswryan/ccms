@@ -19,6 +19,7 @@ def mf_template(opts):
 
 def build_mf(drctry, tmplt, fext):
     """Build makefile for directory from template"""
+
     # Find all source files in directory
     srcs = get_sources(drctry, fext)
 
@@ -52,7 +53,7 @@ def is_main_source(src) -> bool:
         return "int main(" in f.read()
 
 
-def get_sources(direc, exts):
+def get_sources(direc, ext):
     """
     Returns list of files with an extension in exts
     in direc with a main() function in the file
@@ -61,7 +62,7 @@ def get_sources(direc, exts):
     for fl in os.scandir(direc):
         fext = os.path.splitext(fl)[1]
         fname = os.path.splitext(os.path.split(fl)[1])[0]
-        if fext in exts:
+        if fext == ext:
             s.append(fname)
     return s
 
@@ -76,16 +77,19 @@ def follow_includes(file):
     """
     # Files included for topmost file
     incs = get_incs(file)
-
     d = os.path.split(file)[0]
     visited = [os.path.split(file)[1]]
     resolved_incs = list(incs)
-    return resolved_incs
     while len(incs) > 0:
         inc = incs.pop()
+        if inc in visited:
+            continue
         visited.append(inc)
+        tmp = get_incs(os.path.join(d, inc))
+        incs.extend(tmp)
+        resolved_incs.extend(tmp)
 
-    return resolved_incs
+    return set(resolved_incs)
 
 
 def get_incs(file):
@@ -114,7 +118,7 @@ def read_cfg(path):
     return cfg
 
 
-def build_sub(drctry, tmplt, fext):
+def build_sub(drctry, tmplt, fext, igDirs):
     """
         Walks filesystem with root at drctry (creates it if it doesn't exist),
         and builds makefiles at each point
@@ -135,6 +139,7 @@ def main(cfg_path):
 
     startDir = cfg["directory_structure"]["root"]
     subDirs = [os.path.join(startDir, sub) for sub in cfg["directory_structure"]["subs"]]
+    igDirs = cfg["ignored_directories"]
     ext = cfg["source_extension"]
     tmplt = mf_template(cfg["makefile_options"])
 
@@ -144,10 +149,12 @@ def main(cfg_path):
 
     with Pool() as p:
         # Fix tmplt, exts as arguments to build_sub
-        bld = partial(build_sub,tmplt=tmplt, fext=ext)
+        bld = partial(build_sub,tmplt=tmplt, fext=ext, igDirs=igDirs)
         p.map(bld, subDirs)
-
-
+    """
+    for s in subDirs:
+        build_sub(s, tmplt, ext, igDirs)
+    """
 
 if __name__ == "__main__":
     import sys

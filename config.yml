@@ -3,13 +3,13 @@
 directory_structure:
   # The name of the root directory should be the name of the course
   # This should be an absolute path
-  root: /Users/james/opt/cmstest/
+  root: /Users/james/ccms/EE5103/
     # subdirectories. The defaults work well
   subs:
     - exam
     - hw
     - note
-    - quiz
+    - project
 
 # Directories that will not be explored
 ignored_directories:
@@ -20,7 +20,7 @@ ignored_directories:
 # Only implementation files (.cpp) should be listed
 # Don't list header (.h, .hpp) file extensions here
 source_extension:
-  - .cpp
+  .cpp
 
 # Extra options you'd like to be included in all makefiles
 makefile_options:
