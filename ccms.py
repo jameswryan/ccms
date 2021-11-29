@@ -151,10 +151,6 @@ def main(cfg_path):
         # Fix tmplt, exts as arguments to build_sub
         bld = partial(build_sub,tmplt=tmplt, fext=ext, igDirs=igDirs)
         p.map(bld, subDirs)
-    """
-    for s in subDirs:
-        build_sub(s, tmplt, ext, igDirs)
-    """
 
 if __name__ == "__main__":
     import sys
