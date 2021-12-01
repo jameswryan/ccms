@@ -87,7 +87,7 @@ def follow_includes(file):
         visited.append(inc)
         tmp = get_incs(os.path.join(d, inc))
         incs.extend(tmp)
-        resolved_incs.extend(tmp)
+        resolved_incs.append(inc)
 
     return set(resolved_incs)
 
